@@ -64,5 +64,9 @@ app.post("/api/chat", async (req, res) => {
         if (done) {
             break;
         }
+
+        buffer += decoder.decode(value, { 
+            stream: true 
+        });
     }
 });
