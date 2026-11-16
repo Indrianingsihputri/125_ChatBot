@@ -68,5 +68,9 @@ app.post("/api/chat", async (req, res) => {
         buffer += decoder.decode(value, { 
             stream: true 
         });
+
+        const lines = buffer.split("\n");
+        //simpan bagian terakhir kerena mungkin tidak lengkap
+        buffer = lines.pop();
     }
 });
