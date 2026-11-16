@@ -12,3 +12,39 @@ app.use(express.static("public"));
 app.get("/", (req, res) => {
     res.redirect("/index.html");
 });
+
+app.post("/api/chat", async (req, res) => {
+    try{
+        const messages = req.body.messages;
+
+        if (!messages || !Array.isArray(messages)) {
+            return res.status(400).json({ error: "Messages harus berupa array" });
+        }
+
+        const response = await fetch(
+            "https://api.openrouter.ai/v1/chat/completions", 
+            {
+                method: "POST",
+
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${process.env.
+                    OPENROUTER_API_KEY}`
+                },
+
+                body: JSON.stringify({
+                    model: "openchat/openchat-7b",
+                    messages: messages
+                })
+            }
+        );
+
+        if (!response.ok) {
+            const errorData = await response.text();
+
+            console.error("OpenRouter API Error:", errorData);
+
+            return res.status(500).json({ error: errorData });
+        }
+    }
+});
